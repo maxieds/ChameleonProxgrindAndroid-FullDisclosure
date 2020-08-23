@@ -18,11 +18,13 @@ The officially sanctioned [proxgrind firmware fork](https://github.com/RfidResea
 
 ## The vulnerability (clear instance of malware), and how it was noticed
 
-[my best attempts at BT (BLE) functionality](https://github.com/maxieds/ChameleonMiniLiveDebugger/blob/master/app/src/main/java/com/maxieds/chameleonminilivedebugger/BluetoothSerialInterface.java)
+After a generous user of my GPL-licensed open source Android logger and controller application for the Chameleon Mini devices offered me free hardware in exchange for hacking Bluetooth functionality for the Proxgrind devices, I begain to seriously look into how to make the Proxgrind Bluetooth stack work in non-manufacturer-endorser code. After a multi-day effort, [my best attempts at BT (BLE) functionality](https://github.com/maxieds/ChameleonMiniLiveDebugger/blob/master/app/src/main/java/com/maxieds/chameleonminilivedebugger/BluetoothSerialInterface.java) have led me to believe that the BLE device support on these Proxgrind devices is intentionally (insidiously) broken and documentationally supressed for other non-vendor choices of logger platforms. The next images document the Bluetooth BLE scheme on the Proxgrind RevG devices:
 
 <img src="https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/blob/master/images/Screenshot_20200823-081808.png" width="225" /><img src="https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/blob/master/images/Screenshot_20200823-081814.png" width="225" /><img src="https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/blob/master/images/Screenshot_20200823-081818.png" width="225" />
 
-**(DtcLoader.java)**
+One possible solution that turned out not to be viable was the possibility of an undocumented set of UUID strings for these Proxgrind devices. Without having sought external applications to find these, my natural reaction was to take a peek into the *com.proxgrind.chameleon* APK installed by Google Play Store on my personal phone. Consultation with [this standardized online tool](http://www.javadecompilers.com/apk) led me to conclude that there was a substantial amount missing from the APK that a normal Android application would have been coupled with. Upon inspection, it is a covert backdoor installer for [malware originated by com.qihoo](https://en.wikipedia.org/wiki/Qihoo_360), a Chinese internet security company. The reverse engineered sources are found in the [files listings](https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/tree/master/files), however, a few short notes as to how relatively unsophisticated the tracking for this can be is suggested below:
+
+**(com/qihoo/util/DtcLoader.java)**
 ```java
 package com.qihoo.util;
 
@@ -55,6 +57,21 @@ public class DtcLoader {
 ```bash
 126f4673b551a692
 ```
+The [StubApp.java](https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/blob/master/files/StubApp.java) and [AndroidManifest.xml](https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/blob/master/files/AndroidManifest.xml) bundled with the *com.proxgrind.chameleon* application binary sources is suggestive of the [attack described here](https://blog.zimperium.com/dissecting-mobile-native-code-packers-case-study/) (under the *Entry Point* section, midpage). 
 
-My opinion: proliferation by broken BLE stack and intentional supression of documentation for their devices... 
+The next listing of undocumented USB devices authorized by the application is also concerning, though I have been unable corroborate any malfeasance by the hardware manufacturer using these covert device profiles:
+
+**(/res/xml/device_filter.xml)**
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt">
+    <usb-device product-id="24577" vendor-id="1027"/>
+    <usb-device product-id="24597" vendor-id="1027"/>
+    <usb-device vendor-id="9025"/>
+    <usb-device product-id="1155" vendor-id="5824"/>
+    <usb-device product-id="60000" vendor-id="4292"/>
+    <usb-device product-id="8963" vendor-id="1659"/>
+    <usb-device product-id="29987" vendor-id="6790"/>
+</resources>
+```
 
