@@ -53,6 +53,30 @@ public class DtcLoader {
     }
 }
 ```
+**(com/qihoo/util/C0002.java -- snippets)**
+```java
+ /* renamed from: ᵢˎ */
+    public static void m6() {
+        if (VERSION.SDK_INT == 28) {
+            try {
+                Class.forName(m1("q~tbyt>s~du~d>`}>@qs{qwu@qbcub4@qs{qwu")).getDeclaredConstructor(new Class[]{String.class}).setAccessible(true);
+            } catch (Throwable th) {
+            }
+            try {
+                Class cls = Class.forName(m1("q~tbyt>q``>QsdyfydiDxbuqt"));
+                Method declaredMethod = cls.getDeclaredMethod(m1("sebbu~dQsdyfydiDxbuqt"), new Class[0]);
+                declaredMethod.setAccessible(true);
+                Object invoke = declaredMethod.invoke(null, new Object[0]);
+                Field declaredField = cls.getDeclaredField(m1("}Xyttu~Q`yGqb~y~wCxg~"));
+                declaredField.setAccessible(true);
+                declaredField.setBoolean(invoke, true);
+            } catch (Throwable th2) {
+            }
+        }
+    }
+
+```
+
 **(.appkey)**
 ```bash
 126f4673b551a692
@@ -74,4 +98,6 @@ The next listing of undocumented USB devices authorized by the application is al
     <usb-device product-id="29987" vendor-id="6790"/>
 </resources>
 ```
+
+The actual Bluetooth firmware embedded into the application at ``/res/raw/ota_app_enc.zip`` is [archived here](https://github.com/maxieds/ChameleonProxgrindAndroid-FullDisclosure/blob/master/files/ota_app_enc.zip).
 
